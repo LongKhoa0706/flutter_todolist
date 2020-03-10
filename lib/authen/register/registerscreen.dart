@@ -1,33 +1,50 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app1/authen/authenprovider.dart';
 import 'package:flutter_app1/model/user.dart';
 import 'package:flutter_app1/util/const.dart';
 import 'package:flutter_app1/util/dbmanager.dart';
 import 'package:flutter_app1/widget/custom_textformfiel.dart';
 import 'package:flutter_app1/widget/text_form.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends StatelessWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      child: Register(),
+      create: (_) => AuthenProvider(),
+    );
+  }
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _formState = GlobalKey<FormState>();
-  DbManager _dbManager = DbManager();
-  final _emailController = TextEditingController();
-  final _passController = TextEditingController();
-  User user;
-  final _confirmPassController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _scafforState = GlobalKey<ScaffoldState>();
-@override
-  void initState() {
-  _dbManager.opentDb();
-    // TODO: implement initState
-    super.initState();
+class Register extends StatefulWidget {
+  @override
+  _RegisterState createState() => _RegisterState();
+}
 
+class _RegisterState extends State<Register> {
+  DbManager _dbManager = DbManager();
+
+  @override
+  void initState() {
+    _dbManager.opentDb();
+    super.initState();
   }
+
+  final _confirmPassController = TextEditingController();
+  final _scafforState = GlobalKey<ScaffoldState>();
+  final _formState = GlobalKey<FormState>();
+  String email = '';
+  String password = '';
+  String name = '';
+
+  Future<void> submit() async {
+    final form = _formState.currentState.validate();
+    if (form) {
+      await Provider.of<AuthenProvider>(context, listen: false).register(email, name, password);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,116 +81,130 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         SizedBox(
                           height: 15,
                         ),
-                        CustomTextFormField(
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            validator: validateEmail,
-                            controller: _emailController,
-                            decoration:
-                                InputDecoration(border: InputBorder.none),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextForm("Name"),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        CustomTextFormField(
-                          TextFormField(
-                            validator: (val)=>val.isNotEmpty ? null : "Name should not be empty",
-                            controller: _nameController,
-                            decoration:
-                            InputDecoration(border: InputBorder.none),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextForm("Password"),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        CustomTextFormField(
-                          TextFormField(
-                            obscureText: true,
-                            validator: validatePassWord,
-                            controller: _passController,
-                            decoration:
-                                InputDecoration(border: InputBorder.none),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextForm("Confirm Password"),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        CustomTextFormField(
-                          TextFormField(
-                            obscureText: true,
-                            validator: validatePassWord,
-                            controller: _confirmPassController,
-                            decoration:
-                                InputDecoration(border: InputBorder.none),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            onPressed: () => registerUser(context),
-                            child: Text(
-                              "Register",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            ),
-                            color: Constants.backgroundMain,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        Center(
-                          child: Text(
-                            "By registering, you automatically accept the Terms & Policies of candy app.",
-                            style: TextStyle(
-                              color: Constants.backgroundMain,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
+                        Consumer<AuthenProvider>(
+                          builder: (BuildContext context, authenProvider, Widget child) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                CustomTextFormField(
+                                  TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      email = value.trim();
+                                      return authenProvider.validateEmail(value);
+                                    },
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                TextForm("Name"),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                CustomTextFormField(
+                                  TextFormField(
+                                    validator: (val) => val.isNotEmpty ? null : "Name should not be empty",
+                                    decoration: InputDecoration(border: InputBorder.none),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const  SizedBox(
+                                  height: 20,
+                                ),
+                                TextForm("Password"),
+                                const  SizedBox(
+                                  height: 15,
+                                ),
+                                CustomTextFormField(
+                                  TextFormField(
+                                    obscureText: true,
+                                    validator: (value) {
+                                      password = value.trim();
+                                      return authenProvider
+                                          .validatePassWord(value);
+                                    },
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none),
+                                  ),
+                                ),
+                                const   SizedBox(
+                                  height: 20,
+                                ),
+                                TextForm("Confirm Password"),
+                                const   SizedBox(
+                                  height: 15,
+                                ),
+                                CustomTextFormField(
+                                  TextFormField(
+                                    obscureText: true,
+                                    validator: (value){
+                                    return  authenProvider.validatePassWord(password);
+                                    },
+                                    controller: authenProvider.confirmController,
+                                    decoration:
+                                    InputDecoration(border: InputBorder.none),
+                                  ),
+                                ),
+                                const  SizedBox(
+                                  height: 50,
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    onPressed: submit,
+                                    child: Text(
+                                      "Register",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                    color: Constants.backgroundMain,
+                                  ),
+                                ),
+                                const     SizedBox(
+                                  height: 50,
+                                ),
+                                Center(
+                                  child: Text(
+                                    "By registering, you automatically accept the Terms & Policies of candy app.",
+                                    style: TextStyle(
+                                      color: Constants.backgroundMain,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Center(
+                                    child: Text(
+                                      "Have account? Log In",
+                                      style: TextStyle(
+                                          color: Constants.backgroundMain,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
                           },
-                          child: Center(
-                            child: Text(
-                              "Have account? Log In",
-                              style: TextStyle(
-                                  color: Constants.backgroundMain,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  decoration: TextDecoration.underline),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -185,39 +216,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
-  }
-
-  registerUser(BuildContext context) {
-    if (_formState.currentState.validate()) {
-      if(user == null){
-        User user = User(email: _emailController.text.toString().trim(),name: _nameController.text,password: _passController.text);
-        _dbManager.addUser(user);
-        main();
-
-        _scafforState.currentState.showSnackBar(SnackBar(content: Text("Successful"),),);
-      }
-
-    }
-  }
-
-   String validateEmail(String value) {
-       if (!EmailValidator.validate(value)) {
-         return 'Please enter a valid email';
-       }
-
-  }
-   String validatePassWord(String value){
-    if(value.length == 0 ){
-      return 'Password should not be empty';
-    }else if(value.length < 4 ){
-      return 'Password too short';
-    }else if(value != _passController.text){
-      return 'Password not matching';
-    }
-  }
-  Future<void> main() async{
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString('nameUser', _nameController.text);
-    print('thanh cong');
   }
 }
