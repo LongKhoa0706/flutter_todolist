@@ -25,10 +25,10 @@ class DbManager {
     return await _database.insert('user', user.toMap());
   }
 
-  Future<User> checkLoginUser(String email) async {
+  Future<User> checkLoginUser(String email,String password) async {
     await opentDb();
     var reponse =
-        await _database.rawQuery("SELECT * FROM user WHERE email = '$email'");
+        await _database.rawQuery("SELECT * FROM user WHERE email = '$email' AND password = '$password'");
     if (reponse.length == 0) {
       return null;
     } else {

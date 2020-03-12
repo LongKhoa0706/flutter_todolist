@@ -6,23 +6,39 @@ import 'package:flutter_app1/util/dbmanager.dart';
 class AuthenProvider with ChangeNotifier {
   DbManager _dbManager = DbManager();
   User user;
+  String error = '';
   final confirmController = TextEditingController();
 
-
-  Future<User> register(String email, String name, String password) async {
+  Future<bool> register(String email, String name, String password) async {
     if (user == null) {
-      User user = User(
-          email: email.trim(), name: name.trim(), password: password);
+      User user = User(email: email.trim(), name: name.trim(), password: password);
       await _dbManager.addUser(user);
-      print(user);
-//      _scafforState.currentState.showSnackBar(SnackBar(content: Text("Successful"),),);
     }
+    return true;
+  }
+
+  Future<bool> login(String email, String password) async {
+    await _dbManager.checkLoginUser(email, password).then((value) {
+      if (value == null) {
+        error = 'Account doesn\'t not exists ';
+        notifyListeners();
+        return false;
+      } else {
+        error = 'Successful';
+        notifyListeners();
+        return true;
+      }
+    });
+    return true;
   }
 
   String validateEmail(String email) {
-    if (!EmailValidator.validate(email)) {
-      return 'Please enter a valid email';
+    if (email.isEmpty) {
+      return "Email should not be empty";
+    } else if (!EmailValidator.validate(email)) {
+      return "Please enter validate email";
     }
+
   }
 
   String validatePassWord(String password) {
@@ -30,7 +46,7 @@ class AuthenProvider with ChangeNotifier {
       return 'Password should not be empty';
     } else if (password.length < 4) {
       return 'Password too short';
-    }else if(password != confirmController.text){
+    } else if (password != confirmController.text) {
       return 'Password not matching';
     }
   }

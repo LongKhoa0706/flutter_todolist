@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app1/authen/authenprovider.dart';
-import 'package:flutter_app1/model/user.dart';
 import 'package:flutter_app1/util/const.dart';
 import 'package:flutter_app1/util/dbmanager.dart';
 import 'package:flutter_app1/widget/custom_textformfiel.dart';
@@ -42,6 +41,8 @@ class _RegisterState extends State<Register> {
     final form = _formState.currentState.validate();
     if (form) {
       await Provider.of<AuthenProvider>(context, listen: false).register(email, name, password);
+      _scafforState.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text("Successful"),),);
+      Navigator.pop(context);
     }
   }
 
@@ -106,15 +107,15 @@ class _RegisterState extends State<Register> {
                                 ),
                                 CustomTextFormField(
                                   TextFormField(
-                                    validator: (val) => val.isNotEmpty ? null : "Name should not be empty",
+                                    validator: (val){
+                                      name = val;
+                                    return  val.isEmpty ? 'Name should not be empty' : null;
+                                    },
                                     decoration: InputDecoration(border: InputBorder.none),
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 20,
-                                ),
-                                const  SizedBox(
-                                  height: 20,
+                                  height: 15,
                                 ),
                                 TextForm("Password"),
                                 const  SizedBox(
@@ -143,6 +144,7 @@ class _RegisterState extends State<Register> {
                                   TextFormField(
                                     obscureText: true,
                                     validator: (value){
+                                      password = value;
                                     return  authenProvider.validatePassWord(password);
                                     },
                                     controller: authenProvider.confirmController,
@@ -189,7 +191,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).pop();
+                                    Navigator.maybePop(context);
                                   },
                                   child: Center(
                                     child: Text(
