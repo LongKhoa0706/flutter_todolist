@@ -21,15 +21,11 @@ class AuthenProvider with ChangeNotifier {
     await _dbManager.checkLoginUser(email, password).then((value) {
       if (value == null) {
         error = 'Account doesn\'t not exists ';
-        notifyListeners();
-        return false;
       } else {
         error = 'Successful';
-        notifyListeners();
-        return true;
       }
     });
-    return true;
+  return false;
   }
 
   String validateEmail(String email) {

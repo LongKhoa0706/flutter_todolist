@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app1/constant/router_path.dart';
 
 import 'package:flutter_app1/util/const.dart';
 import 'package:flutter_app1/view/home/profilescreen.dart';
@@ -24,6 +25,7 @@ class _DashBoardState extends State<DashBoard> {
     "Scheduler",
     "Notifcation"
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +109,7 @@ class _DashBoardState extends State<DashBoard> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Constants.backgroundMain,
         child: Icon(Icons.add,color: Colors.white,),
-        onPressed: () =>Navigator.of(context).pushNamed('/newtaskscreen'),
+        onPressed: () =>Navigator.of(context).pushNamed(AddRoute),
       ),
     );
   }

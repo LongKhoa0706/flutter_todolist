@@ -33,8 +33,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         centerTitle: true,
         title: Text(
           "New task ".toUpperCase(),
-          style: TextStyle(
-              color: Constants.backgroundMain, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Constants.backgroundMain,
+              fontWeight: FontWeight.bold),
         ),
         backgroundColor: Constants.backgroundApp,
       ),

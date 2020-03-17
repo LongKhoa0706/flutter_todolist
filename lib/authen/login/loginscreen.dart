@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app1/authen/authenprovider.dart';
+import 'package:flutter_app1/constant/router_path.dart';
 import 'package:flutter_app1/util/const.dart';
 import 'package:flutter_app1/widget/custom_textformfiel.dart';
 import 'package:flutter_app1/widget/text_form.dart';
@@ -38,15 +39,15 @@ class _LoginWidgetState extends State<LoginWidget>
   String password = '';
   String email = '';
 
-  Future<bool> submit() async {
-    var reponse =  await Provider.of<AuthenProvider>(context);
-    final form = _formState.currentState.validate();
-    if(form){
-      if(reponse == true){
-
-      }
-    }
-  }
+//  Future<bool> submit() async {
+//    var reponse =  await Provider.of<AuthenProvider>(context);
+//    final form = _formState.currentState.validate();
+//    if(form){
+//      if(reponse == true){
+//
+//      }
+//    }
+//  }
 
   @override
   void initState() {
@@ -152,12 +153,13 @@ class _LoginWidgetState extends State<LoginWidget>
                             SizedBox(
                               height: 15,
                             ),
+
                             CustomTextFormField(
                               TextFormField(
-
                                 decoration: InputDecoration(border: InputBorder.none),
                                 validator: (value){
                                    password = value;
+                                   return null;
                                 },
                               ),
                             ),
@@ -199,11 +201,13 @@ class _LoginWidgetState extends State<LoginWidget>
                                       var form = _formState.currentState.validate();
                                       if(form) {
                                        var reponse =  await  authenProvider.login(email, password);
-                                       if(reponse  == true) {
+                                       if(reponse  == false) {
                                          _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
                                        }else{
                                          _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
+                                         Navigator.of(context).pushNamed('/dashboard');
                                        }
+
                                       }
                                     },
                                     child: AnimatedBuilder(
@@ -232,7 +236,7 @@ class _LoginWidgetState extends State<LoginWidget>
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).pushNamed('/registerscreen');
+                                Navigator.of(context).pushNamed(RegisterRoute);
                               },
                               child: Center(
                                 child: Text(

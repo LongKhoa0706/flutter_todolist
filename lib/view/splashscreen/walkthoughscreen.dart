@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app1/constant/router_path.dart';
 import 'package:flutter_app1/util/const.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
@@ -53,7 +54,7 @@ class _WalkThoughtScreenState extends State<WalkThoughtScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   GestureDetector(onTap: (){
-                    Navigator.of(context).pushReplacementNamed('/loginscreen');
+                    Navigator.of(context).pushReplacementNamed(LoginRoute);
                   },child: Text("Skip",style: TextStyle(color: Constants.backgroundMain,fontWeight: FontWeight.bold,fontSize: 18),)),
                   RaisedButton(
                     shape: RoundedRectangleBorder(
@@ -61,7 +62,7 @@ class _WalkThoughtScreenState extends State<WalkThoughtScreen> {
                     ),
                     color: Constants.backgroundMain,
                     onPressed: (){
-                      currentIndex == 2 ? Navigator.of(context).pushReplacementNamed('/loginscreen') : _swiperController.next();
+                      currentIndex == 2 ? Navigator.of(context).pushReplacementNamed(LoginRoute) : _swiperController.next();
 
                     },
                     child: Text(currentIndex ==2 ? "Done" : "Next",style: TextStyle(color: Colors.white),),

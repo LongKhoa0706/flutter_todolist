@@ -30,7 +30,6 @@ class _RegisterState extends State<Register> {
     super.initState();
   }
 
-  final _confirmPassController = TextEditingController();
   final _scafforState = GlobalKey<ScaffoldState>();
   final _formState = GlobalKey<FormState>();
   String email = '';
@@ -50,6 +49,12 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafforState,
+      appBar: AppBar(
+        leading:           IconButton(icon: Icon(Icons.arrow_back_ios,color: Constants.backgroundMain,), onPressed: () =>Navigator.pop(context),)
+        ,
+        elevation: 0.0,
+        backgroundColor: Constants.backgroundApp,
+      ),
       backgroundColor: Constants.backgroundApp,
       body: SafeArea(
         child: Center(

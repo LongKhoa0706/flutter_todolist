@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app1/constant/router_path.dart';
 import 'package:flutter_app1/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class SplashScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void startTimer(){
     Timer(Duration(seconds: 2), (){
-      Navigator.of(context).pushReplacementNamed('/walkthoughtscreen');
+      Navigator.of(context).pushReplacementNamed(OnBoardRoute);
     });
   }
 
