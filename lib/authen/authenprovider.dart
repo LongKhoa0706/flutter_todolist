@@ -17,15 +17,18 @@ class AuthenProvider with ChangeNotifier {
     return true;
   }
 
+
   Future<bool> login(String email, String password) async {
-    await _dbManager.checkLoginUser(email, password).then((value) {
-      if (value == null) {
-        error = 'Account doesn\'t not exists ';
-      } else {
-        error = 'Successful';
-      }
-    });
-  return false;
+    dynamic result = await _dbManager.checkLoginUser(email,password);
+    if (result!=null) {
+      print("thanh cong");
+      error = "Thanh cong";
+      return true;
+    }else{
+      error = "that bai ";
+    }
+
+    return false;
   }
 
   String validateEmail(String email) {

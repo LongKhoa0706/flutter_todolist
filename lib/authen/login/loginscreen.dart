@@ -197,17 +197,27 @@ class _LoginWidgetState extends State<LoginWidget>
 
                                   ),
                                   child: InkWell(
-                                    onTap: ()  async {// phai them async
+                                    onTap: ()    {
                                       var form = _formState.currentState.validate();
                                       if(form) {
-                                       var reponse =  await  authenProvider.login(email, password);
+                                       var reponse =    authenProvider.login(email, password);
                                        if(reponse  == false) {
                                          _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
                                        }else{
-                                         _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
-                                         Navigator.of(context).pushNamed('/dashboard');
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
+                                        Navigator.of(context).pushNamed(OnBoardRoute);
                                        }
 
+
+
+                                      reponse.then((result){
+                                        if (!result) {
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
+                                        }else{
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
+                                          Navigator.of(context).pushNamed(DashBoardRoute);
+                                        }
+                                      });
                                       }
                                     },
                                     child: AnimatedBuilder(
