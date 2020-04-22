@@ -201,15 +201,6 @@ class _LoginWidgetState extends State<LoginWidget>
                                       var form = _formState.currentState.validate();
                                       if(form) {
                                        var reponse =    authenProvider.login(email, password);
-                                       if(reponse  == false) {
-                                         _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
-                                       }else{
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
-                                        Navigator.of(context).pushNamed(OnBoardRoute);
-                                       }
-
-
-
                                       reponse.then((result){
                                         if (!result) {
                                           _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
