@@ -5,12 +5,12 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DbManager {
-  Database _database;
+  static Database database;
 
   Future opentDb() async {
-    if (_database == null) {
+    if (database == null) {
       String path = join(await getDatabasesPath(), 'todolist.db');
-      _database = await openDatabase(path, version: 1, onCreate: initDb);
+      database = await openDatabase(path, version: 1, onCreate: initDb);
     }
   }
 
@@ -22,13 +22,13 @@ class DbManager {
   // USER
   Future<int> addUser(User user) async {
     await opentDb();
-    return await _database.insert('user', user.toMap());
+    return await database.insert('user', user.toMap());
   }
 
   Future<User> checkLoginUser(String email,String password) async {
     await opentDb();
     var reponse =
-        await _database.rawQuery("SELECT * FROM user WHERE email = '$email' AND password = '$password'");
+        await database.rawQuery("SELECT * FROM user WHERE email = '$email' AND password = '$password'");
     if (reponse.length == 0) {
       return null;
     } else {
@@ -38,23 +38,10 @@ class DbManager {
 
   Future<int> getNameUser(int id) async{
     await opentDb();
-   await _database.rawQuery("SELECT user.name from user WHERE id = $id ");
+   await database.rawQuery("SELECT user.name from user WHERE id = $id ");
   }
 
-  // NOTE
-  Future<int> addNote(Note note) async{
-    await opentDb();
-    _database.insert('note', note.toMap());
-  }
-  Future<List<Note>> getAllListNote() async {
-    await opentDb();
-    var reponse = await _database.query("note");
-    List<Note>arrNote = reponse.map((c)=>Note.fromJson(c)).toList();
-    return arrNote;
-  }
-  Future<int> deleteNote(int id )async {
-    await opentDb();
-    return await _database.delete('note',where: "id = ? ",whereArgs: [id]);
-  }
+
+
 
 }

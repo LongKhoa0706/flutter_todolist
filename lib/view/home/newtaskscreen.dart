@@ -1,18 +1,32 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app1/constant/router_path.dart';
 import 'package:flutter_app1/model/note.dart';
+import 'package:flutter_app1/note_provider.dart';
 import 'package:flutter_app1/util/const.dart';
 import 'package:flutter_app1/util/dbmanager.dart';
 import 'package:flutter_app1/widget/text_form.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class NewTaskScreen extends StatefulWidget {
+class NewTaskScreen extends StatelessWidget {
   @override
-  _NewTaskScreenState createState() => _NewTaskScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_)=>NoteProvider(),
+      child: NewTaskScreenWidget(),
+    );
+  }
 }
 
-class _NewTaskScreenState extends State<NewTaskScreen> {
+
+class NewTaskScreenWidget extends StatefulWidget {
+  @override
+  _NewTaskScreenStateWidget createState() => _NewTaskScreenStateWidget();
+}
+
+class _NewTaskScreenStateWidget extends State<NewTaskScreenWidget> {
   final _fromState = GlobalKey<FormState>();
   final _scaffold = GlobalKey<ScaffoldState>();
   DateTime selectedDate = DateTime.now();
@@ -20,10 +34,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   final _dateTimeController = TextEditingController();
   final dateFormat = DateFormat('dd-MM-yyyy');
   DbManager _dbManager = DbManager();
-  Note note;
-
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffold,
       appBar: AppBar(
@@ -73,63 +86,68 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              child: Form(
-                key: _fromState,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    TextForm("Prority"),
-                    SizedBox(
-                      height: 18,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      padding: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xff243B6B),
+              child: Consumer<NoteProvider>(
+                builder: (BuildContext context, NoteProvider value, Widget child) {
+                  return Form(
+                    key: _fromState,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        TextForm("Prority"),
+
+                        SizedBox(
+                          height: 18,
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TextFormField(
-                        controller: _priorityController,
-                        validator: (val)=>val.isNotEmpty ? null : "Priority should not be empty",
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
+                        Container(
+                          width: double.infinity,
+                          height: 50,
+                          padding: EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Color(0xff243B6B),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextFormField(
+                            controller: _priorityController,
+                            validator: (val)=>val.isNotEmpty ? null : "Priority should not be empty",
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextForm("Complete by "),
-                    SizedBox(
-                      height: 18,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      padding: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xff243B6B),
+                        SizedBox(
+                          height: 20,
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TextFormField(
-                        validator: (val)=>val.isNotEmpty ? null : "Date should not be empty",
-                        keyboardType: TextInputType.datetime,
-                        controller: _dateTimeController,
-                        onTap: () => _selectDate(context),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
+                        TextForm("Complete by "),
+                        SizedBox(
+                          height: 18,
                         ),
-                      ),
+                        Container(
+                          width: double.infinity,
+                          height: 50,
+                          padding: EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Color(0xff243B6B),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextFormField(
+                            validator: (val)=>val.isNotEmpty ? null : "Date should not be empty",
+                            keyboardType: TextInputType.datetime,
+                            controller: _dateTimeController,
+                            onTap: () => _selectDate(context),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           )
@@ -163,17 +181,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   addNote() {
     if(_fromState.currentState.validate()){
-      if(note == null){
-        Note note = Note(title: _priorityController.text,date: _dateTimeController.text);
-        setState(() {
-          _dbManager.addNote(note).then((val){
-            _priorityController.clear();
-            _dateTimeController.clear();
-          });
-        });
-        Navigator.of(context).pop();
-        _scaffold.currentState.showSnackBar(SnackBar(content: Text("Successful"),));
-      }
+      Provider.of<NoteProvider>(context,listen: false).addNote(_priorityController.text, _dateTimeController.text);
+      Navigator.of(context).pushNamed(DashBoardRoute);
+      _scaffold.currentState.showSnackBar(SnackBar(content: Text("Successful"),));
     }
   }
 }

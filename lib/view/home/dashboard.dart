@@ -109,7 +109,10 @@ class _DashBoardState extends State<DashBoard> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Constants.backgroundMain,
         child: Icon(Icons.add,color: Colors.white,),
-        onPressed: () =>Navigator.of(context).pushNamed(AddRoute),
+        onPressed: () {
+
+          Navigator.of(context).pushNamed(AddRoute);
+        },
       ),
     );
   }

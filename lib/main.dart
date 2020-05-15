@@ -13,7 +13,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
      initialRoute: SplashRoute,
       onGenerateRoute: Router.generateRoute,
-
       // return route name does not exits
       onUnknownRoute: (RouteSettings setting){
         return MaterialPageRoute(builder: (_)=>Text("Round name does not exist"));

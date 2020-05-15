@@ -39,15 +39,7 @@ class _LoginWidgetState extends State<LoginWidget>
   String password = '';
   String email = '';
 
-//  Future<bool> submit() async {
-//    var reponse =  await Provider.of<AuthenProvider>(context);
-//    final form = _formState.currentState.validate();
-//    if(form){
-//      if(reponse == true){
-//
-//      }
-//    }
-//  }
+
 
   @override
   void initState() {
@@ -56,7 +48,6 @@ class _LoginWidgetState extends State<LoginWidget>
 
     rippleController = AnimationController(
         vsync: this,
-
         duration: Duration(seconds: 1)
     );
 
@@ -200,8 +191,8 @@ class _LoginWidgetState extends State<LoginWidget>
                                     onTap: ()    {
                                       var form = _formState.currentState.validate();
                                       if(form) {
-                                       var reponse =    authenProvider.login(email, password);
-                                      reponse.then((result){
+                                       var reponse = authenProvider.login(email, password);
+                                        reponse.then((result){
                                         if (!result) {
                                           _scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1500),content: Text(authenProvider.error),),);
                                         }else{
